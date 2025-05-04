@@ -1,12 +1,13 @@
-﻿services:
-  takttusur.inmemoria.api:
-    image: takttusur.inmemoria.api
-    build:
-      context: .
-      dockerfile: TaktTusur.InMemoria.Api/Dockerfile
+services:
+  takttusur.inmemoria.mysql:
+    image: mysql:9
+    environment:
+      MYSQL_ROOT_PASSWORD: migrationPassword
 
   takttusur.inmemoria.migrationapp:
     image: takttusur.inmemoria.migrationapp
+    depends_on:
+      - takttusur.inmemoria.mysql
     build:
       context: .
       dockerfile: TaktTusur.InMemoria.MigrationApp/Dockerfile
