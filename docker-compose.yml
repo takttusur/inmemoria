@@ -1,0 +1,12 @@
+﻿services:
+  takttusur.inmemoria.api:
+    image: takttusur.inmemoria.api
+    build:
+      context: .
+      dockerfile: TaktTusur.InMemoria.Api/Dockerfile
+
+  takttusur.inmemoria.migrationapp:
+    image: takttusur.inmemoria.migrationapp
+    build:
+      context: .
+      dockerfile: TaktTusur.InMemoria.MigrationApp/Dockerfile
