@@ -10,3 +10,8 @@
     build:
       context: .
       dockerfile: TaktTusur.InMemoria.MigrationApp/Dockerfile
+
+  takttusu.inmemoria.mysql:
+    image: mysql:9
+    environment:
+      MYSQL_ROOT_PASSWORD: migrationPassword
