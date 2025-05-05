@@ -4,3 +4,5 @@
     build:
       context: .
       dockerfile: TaktTusur.InMemoria.Api/Dockerfile
+    environment:
+      ConnectionStrings__InMemoriaDb: "Host=myserver;Database=mydb;Username=myuser;Password=mypassword"

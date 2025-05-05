@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TaktTusur.InMemoria.DataAccess.Context;
+
 namespace TaktTusur.InMemoria.Api;
 
 public class Program
@@ -7,6 +10,10 @@ public class Program
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
+
+        var connectionString = builder.Configuration.GetConnectionString("InMemoriaDb");
+        builder.Services.AddDbContext<InMemoriaDbContext>(options =>
+            options.UseNpgsql(connectionString));
 
 		builder.Services.AddControllers();
 		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
