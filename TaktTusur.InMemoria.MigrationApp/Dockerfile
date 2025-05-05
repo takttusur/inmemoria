@@ -5,7 +5,9 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["TaktTusur.InMemoria.Domain/TaktTusur.InMemoria.Domain.csproj", "TaktTusur.InMemoria.Domain/"]
 COPY ["TaktTusur.InMemoria.MigrationApp/TaktTusur.InMemoria.MigrationApp.csproj", "TaktTusur.InMemoria.MigrationApp/"]
+RUN dotnet restore "TaktTusur.InMemoria.Domain/TaktTusur.InMemoria.Domain.csproj"
 RUN dotnet restore "TaktTusur.InMemoria.MigrationApp/TaktTusur.InMemoria.MigrationApp.csproj"
 COPY . .
 WORKDIR "/src/TaktTusur.InMemoria.MigrationApp"

@@ -18,7 +18,7 @@ public class PersonProfile : Profile
 		    .ForMember(dest => dest.DeathDay, opts => opts.MapFrom(src => src.DeathDay))
 		    .ForMember(dest => dest.Biography, opts => opts.MapFrom(src => src.Biography))
 		    .ForMember(dest => dest.Active, opts => opts.MapFrom(src => src.Active == 1 ? true : false))
-            .ForMember(dest => dest.Attachments, opts => opts.ConvertUsing(new MediaResourceToAttachmentValueConverter()));
+            .ForMember(dest => dest.Attachments, opts => opts.ConvertUsing(new MediaResourceToAttachmentValueConverter(), src => src.MediaResources));
 	}
 }
 

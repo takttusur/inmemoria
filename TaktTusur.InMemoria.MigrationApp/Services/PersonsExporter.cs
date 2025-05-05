@@ -4,7 +4,8 @@ using AutoMapper;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
-using TaktTusur.InMemoria.MigrationApp.OldModels;
+using OldModels = TaktTusur.InMemoria.MigrationApp.OldModels;
+using NewModels = TaktTusur.InMemoria.Domain.Entities;
 
 namespace TaktTusur.InMemoria.MigrationApp.Services;
 
@@ -32,23 +33,23 @@ public class PersonsExporter : IPersonExporter
 	public void Export(int id, string fileName)
 	{
 		var personSql = "SELECT * FROM person WHERE id = @id";
-		var person = _connection.QuerySingle<Person>(personSql, new
+		var person = _connection.QuerySingle<OldModels.Person>(personSql, new
 		{
 			id
 		});
 		var mediaSql = "SELECT * FROM resource where person_id = @personId";
 		var personId = person.Id;
-		person.MediaResources = _connection.Query<MediaResource>(mediaSql, new
+		person.MediaResources = _connection.Query<OldModels.MediaResource>(mediaSql, new
 		{
 			personId
 		}).ToList();
 
 		var converted = ConvertLinks(person);
-		var mapped = _mapper.Map<OldModels.Person, Person>(converted);
+		var mapped = _mapper.Map<OldModels.Person, NewModels.Person>(converted);
 		File.WriteAllText(fileName, JsonSerializer.Serialize(mapped));
 	}
 
-	private Person ConvertLinks(Person person)
+	private OldModels.Person ConvertLinks(OldModels.Person person)
 	{
 		// PhotoBig examples:
 		// http://inmemoria.tusur.ru/media/20120704102731.jpg
