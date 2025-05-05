@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
@@ -37,6 +38,52 @@ public class PersonsExporter : IPersonExporter
 		{
 			personId
 		}).ToList();
-		File.WriteAllText(fileName, JsonSerializer.Serialize(person));
+
+		var converted = ConvertLinks(person);
+		File.WriteAllText(fileName, JsonSerializer.Serialize(converted));
+	}
+
+	private Person ConvertLinks(Person person)
+	{
+		// PhotoBig examples:
+		// http://inmemoria.tusur.ru/media/20120704102731.jpg
+		person.PhotoBig = ExtractPhoto(person.PhotoBig);
+
+		// PhotoSmall examples:
+		// http://inmemoria.tusur.ru/media/20120704102731s.jpg
+		person.PhotoSmall = ExtractPhoto(person.PhotoSmall);
+
+		// Media -> Data examples
+		// http://inmemoria.tusur.ru/media/3/20120530114041.jpg
+
+		var innerLinkingTypes = new[] { "img", "video", "audio", "doc" };
+		foreach (var mediaResource in person.MediaResources)
+		{
+			if (!innerLinkingTypes.Contains(mediaResource.ResourceType.ToLower())) continue;
+			mediaResource.Data = ExtractMedia(mediaResource.Data);
+		}
+
+		return person;
+	}
+
+	private string? ExtractPhoto(string url)
+	{
+		var regex = new Regex(@"(?<=media\/).+$");
+		var match = regex.Match(url);
+
+		return match.Success ? match.Value : null;
+	}
+
+	private string ExtractMedia(string url)
+	{
+		var regex = new Regex(@"(?<=\/)[^\/]+$");
+		var match = regex.Match(url);
+
+		if (match.Success)
+		{
+			return match.Value;
+		}
+
+		throw new ApplicationException("Unknown resource link:" + url);
 	}
 }
