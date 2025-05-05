@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Dapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using MySqlConnector.Logging;
 using TaktTusur.InMemoria.MigrationApp.Configuration;
+using TaktTusur.InMemoria.MigrationApp.Mappings;
+using TaktTusur.InMemoria.MigrationApp.OldModels;
 using TaktTusur.InMemoria.MigrationApp.Services;
 
 namespace TaktTusur.InMemoria.MigrationApp;
@@ -35,6 +39,8 @@ class Program
 			builder.AddConfiguration(configuration.GetSection("Logging"));
 			builder.AddConsole();
 		});
+
+		DapperMappings.ApplyMappings();
 
 		var serviceProvider = serviceCollection.BuildServiceProvider();
 

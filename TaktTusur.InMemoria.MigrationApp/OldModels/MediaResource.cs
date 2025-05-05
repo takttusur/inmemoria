@@ -18,10 +18,10 @@ public class MediaResource
 	public string Name { get; set; }
 
 	[Column("type")]
-	public ResourceType ResourceType { get; set; }
+	public string ResourceType { get; set; }
 
 	[Column("rubric")]
-	public Rubric Rubric { get; set; }
+	public string Rubric { get; set; }
 
 	[Column("data")]
 	public string Data { get; set; }
