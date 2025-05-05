@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Dapper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
-using MySqlConnector.Logging;
-using TaktTusur.InMemoria.MigrationApp.Configuration;
 using TaktTusur.InMemoria.MigrationApp.Mappings;
-using TaktTusur.InMemoria.MigrationApp.OldModels;
 using TaktTusur.InMemoria.MigrationApp.Services;
 
 namespace TaktTusur.InMemoria.MigrationApp;
@@ -30,6 +25,7 @@ class Program
 		serviceCollection.AddTransient<IDbConnectionTester, DbConnectionTester>();
 		serviceCollection.AddTransient<ISettingsExporter, SettingsExporter>();
 		serviceCollection.AddTransient<IPersonExporter, PersonsExporter>();
+		serviceCollection.AddTransient<IApplicationService, ApplicationService>();
 		serviceCollection.AddLogging();
 		serviceCollection.Configure<LoggerFilterOptions>(options =>
 			options.MinLevel = LogLevel.Information);
@@ -48,32 +44,7 @@ class Program
 		var dbTester = serviceProvider.GetRequiredService<IDbConnectionTester>();
 		dbTester.Test(5);
 
-		// Restore DB using sql file
-		var mySqlDumpLoader = serviceProvider.GetRequiredService<IMySqlDumpLoader>();
-		var backupSql = File.ReadAllText("./Resources/inmemoria.sql");
-		mySqlDumpLoader.Load(backupSql);
-
-		// Read export settings
-		var exportConfiguration = configuration.GetSection(ExportConfiguration.SECTION_NAME)
-				.Get<ExportConfiguration>();
-
-		// Saving Settings to file
-		var settingsExporter = serviceProvider.GetRequiredService<ISettingsExporter>();
-		var exported = settingsExporter.ExportTo(exportConfiguration.SettingsFile);
-		Console.WriteLine("Settings Exported:" + exported);
-
-		// Saving Persons
-		var personExporter = serviceProvider.GetRequiredService<IPersonExporter>();
-		var ids = personExporter.GetEntityIdsForExport();
-		int personCounter = 0;
-		foreach (var id in ids)
-		{
-			const string ext = ".json";
-			var file = Path.Combine(exportConfiguration.PersonsDirectory, id + ext);
-			if (File.Exists(file)) continue;
-			personExporter.Export(id, file);
-			personCounter++;
-		}
-		Console.WriteLine("Person Exporeted:" + personCounter);
+		var app = serviceProvider.GetRequiredService<IApplicationService>();
+		app.DoExport();
 	}
 }
