@@ -17,13 +17,11 @@ public class MediaResource
 	[Column("name")]
 	public string Name { get; set; }
 
-	// TODO: enum 'img','video','audio','url','text','html','doc'
 	[Column("type")]
-	public object ResourceType { get; set; }
+	public ResourceType ResourceType { get; set; }
 
-	// TODO: enum 'gallery','memoir','hike'
 	[Column("rubric")]
-	public object Rubric { get; set; }
+	public Rubric Rubric { get; set; }
 
 	[Column("data")]
 	public string Data { get; set; }
@@ -39,6 +37,4 @@ public class MediaResource
 
 	[Column("active")]
 	public int Active { get; set; }
-
-	public virtual Person Person { get; set; }
 }

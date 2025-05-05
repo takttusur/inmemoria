@@ -42,8 +42,10 @@ public class Person
 	public string PhotoBig { get; set; }
 
 	[Column("photo_small")]
-	public string PhotoSamll { get; set; }
+	public string PhotoSmall { get; set; }
 
 	[Column("active")]
 	public int Active { get; set; }
+
+	public List<MediaResource> MediaResources { get; set; }
 }
