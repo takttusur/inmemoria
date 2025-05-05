@@ -26,6 +26,10 @@ class Program
 		serviceCollection.AddTransient<ISettingsExporter, SettingsExporter>();
 		serviceCollection.AddTransient<IPersonExporter, PersonsExporter>();
 		serviceCollection.AddTransient<IApplicationService, ApplicationService>();
+		serviceCollection.AddAutoMapper(config =>
+		{
+			config.AddProfile<PersonProfile>();
+		});
 		serviceCollection.AddLogging();
 		serviceCollection.Configure<LoggerFilterOptions>(options =>
 			options.MinLevel = LogLevel.Information);

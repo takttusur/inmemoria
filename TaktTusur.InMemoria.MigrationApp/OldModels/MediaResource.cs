@@ -23,6 +23,9 @@ public class MediaResource
 	[Column("type")]
 	public string ResourceType { get; set; }
 
+	/// <summary>
+	/// 'gallery','memoir','hike'
+	/// </summary>
 	[Column("rubric")]
 	public string Rubric { get; set; }
 

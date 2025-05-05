@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TaktTusur.InMemoria.MigrationApp.Configuration;
@@ -13,7 +14,8 @@ public class ApplicationService : IApplicationService
 	private readonly ILogger<ApplicationService> _logger;
 
 	public ApplicationService(IMySqlDumpLoader mySqlDumpLoader, IConfiguration configuration,
-		ISettingsExporter settingsExporter, IPersonExporter personExporter, ILogger<ApplicationService> logger)
+		ISettingsExporter settingsExporter, IPersonExporter personExporter,
+		ILogger<ApplicationService> logger)
 	{
 		_mySqlDumpLoader = mySqlDumpLoader;
 		_configuration = configuration;

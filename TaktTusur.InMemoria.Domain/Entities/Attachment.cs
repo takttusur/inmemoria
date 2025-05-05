@@ -10,9 +10,15 @@ public class Attachment : BaseEntity
 
 	public string Data { get; set; }
 
+	public AttachmentCategory Category { get; set; }
+
+	public AttachmentTypes AttachmentType { get; set; }
+
 	public int Order { get; set; }
 
 	public DateTime CreatedAt { get; set; }
+
+	public int PersonId { get; set; }
 
 	public virtual Person Person { get; set; }
 }

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using AutoMapper;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
@@ -11,11 +12,14 @@ public class PersonsExporter : IPersonExporter
 {
 	private readonly MySqlConnection _connection;
 	private readonly ILogger<PersonsExporter> _logger;
+	private readonly IMapper _mapper;
 
-	public PersonsExporter(MySqlConnection connection, ILogger<PersonsExporter> logger)
+	public PersonsExporter(MySqlConnection connection, ILogger<PersonsExporter> logger,
+		IMapper mapper)
 	{
 		_connection = connection;
 		_logger = logger;
+		_mapper = mapper;
 	}
 
 	public IEnumerable<int> GetEntityIdsForExport()
@@ -40,7 +44,8 @@ public class PersonsExporter : IPersonExporter
 		}).ToList();
 
 		var converted = ConvertLinks(person);
-		File.WriteAllText(fileName, JsonSerializer.Serialize(converted));
+		var mapped = _mapper.Map<OldModels.Person, Person>(converted);
+		File.WriteAllText(fileName, JsonSerializer.Serialize(mapped));
 	}
 
 	private Person ConvertLinks(Person person)

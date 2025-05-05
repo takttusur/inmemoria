@@ -7,7 +7,7 @@ public class InitialMigration : Migration
 {
 	public override void Up()
 	{
-		Create.Table("Person")
+		Create.Table("Persons")
 		    .WithColumn("Id").AsInt32().PrimaryKey().Identity()
 		    .WithColumn("FirstName").AsString()
 		    .WithColumn("LastName").AsString()
@@ -21,7 +21,7 @@ public class InitialMigration : Migration
 
 		Create.Table("Attachments")
 		    .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-		    .WithColumn("PersonId").AsInt32().ForeignKey("FK_Attachments_Person", "Person", "Id")
+		    .WithColumn("PersonId").AsInt32().ForeignKey("FK_Attachments_Person", "Persons", "Id")
 		    .WithColumn("Title").AsString()
 		    .WithColumn("Subtitle").AsString()
 		    .WithColumn("IsActive").AsBoolean()
