@@ -28,7 +28,8 @@ public class PersonController : Controller
 				|| x.Nickname.Contains(query));
 		}
 
-		persons = persons.Skip(skip).Take(take).OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Patronymic);
+		persons = persons.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Patronymic)
+			.Skip(skip).Take(take);
 
 		return Ok(persons);
 	}
