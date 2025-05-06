@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TaktTusur.InMemoria.Api.Models;
 using TaktTusur.InMemoria.DataAccess.Context;
 using TaktTusur.InMemoria.Domain.Entities;
 
@@ -15,6 +16,7 @@ public class PersonController : Controller
 	}
 
 	[HttpGet]
+	[ProducesResponseType<PagedResultModel<Person>>(200)]
 	public IActionResult Get(string query = "", int skip = 0, int take = 10)
 	{
 		IQueryable<Person> persons = _context.Persons.AsNoTracking().Where(x => x.Active);
@@ -28,13 +30,23 @@ public class PersonController : Controller
 				|| x.Nickname.Contains(query));
 		}
 
+		var count = persons.Count();
 		persons = persons.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Patronymic)
 			.Skip(skip).Take(take);
 
-		return Ok(persons);
+		var result = new PagedResultModel<Person>()
+		{
+			Items = persons,
+			TotalCount = count,
+			Skip = skip,
+			Take = take
+		};
+
+		return Ok(result);
 	}
 
 	[HttpGet("{id}")]
+	[ProducesResponseType<Person>(200)]
 	public IActionResult Get(int id)
 	{
 		var person = _context.Persons
