@@ -46,7 +46,10 @@ public class PersonsExporter : IPersonExporter
 
 		var converted = ConvertLinks(person);
 		var mapped = _mapper.Map<OldModels.Person, NewModels.Person>(converted);
-		File.WriteAllText(fileName, JsonSerializer.Serialize(mapped));
+		File.WriteAllText(fileName, JsonSerializer.Serialize(mapped, new JsonSerializerOptions()
+		{
+			WriteIndented = true
+		}));
 	}
 
 	private OldModels.Person ConvertLinks(OldModels.Person person)

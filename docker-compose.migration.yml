@@ -12,13 +12,14 @@ services:
       MYSQL_ROOT_PASSWORD: migrationPassword
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
+      timeout: 5s
       retries: 10
 
   takttusur.inmemoria.migrationapp:
     image: takttusur.inmemoria.migrationapp
     depends_on:
-      - takttusur.inmemoria.mysql
+      takttusur.inmemoria.mysql:
+        condition: service_healthy
     restart: no
     build:
       context: .

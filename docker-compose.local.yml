@@ -6,10 +6,18 @@ services:
     build:
       context: .
       dockerfile: TaktTusur.InMemoria.Api/Dockerfile
+    volumes:
+      - ./Data/persons:/app/persons:r
     environment:
       ConnectionStrings__InMemoriaDb: "Host=db;Database=mydb;Username=postgres;Password=mypassword"
+      ASPNETCORE_URLS: "http://+:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    ports:
+      - "5555:80"
 
   db:
     image: postgres:15

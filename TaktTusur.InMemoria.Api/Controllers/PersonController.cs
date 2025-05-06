@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TaktTusur.InMemoria.DataAccess.Context;
 
-namespace TaktTusur.InMemoria.Api.Controllers;
-
+[Route("api/[controller]")]
+[ApiController]
 public class PersonController : Controller
 {
 	private readonly InMemoriaDbContext _context;

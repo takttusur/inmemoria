@@ -9,13 +9,15 @@ public class PersonProfile : Profile
 	public PersonProfile()
 	{
 		CreateMap<Person, TaktTusur.InMemoria.Domain.Entities.Person>()
+		    .ForMember(dest => dest.Id, opts => opts.MapFrom(src => default(int)))
 		    .ForMember(dest => dest.FirstName, opts => opts.MapFrom(src => src.FirstName))
+		    .ForMember(dest => dest.AttachmentsStorageId, opts => opts.MapFrom(src => src.Id))
 		    .ForMember(dest => dest.LastName, opts => opts.MapFrom(src => src.LastName))
 		    .ForMember(dest => dest.MaidenName, opts => opts.MapFrom(src => src.LastName2))
 		    .ForMember(dest => dest.Patronymic, opts => opts.MapFrom(src => src.Patronymic))
 		    .ForMember(dest => dest.Nickname, opts => opts.MapFrom(src => src.Nickname))
-		    .ForMember(dest => dest.Birthday, opts => opts.MapFrom(src => src.Birthday))
-		    .ForMember(dest => dest.DeathDay, opts => opts.MapFrom(src => src.DeathDay))
+		    .ForMember(dest => dest.Birthday, opts => opts.MapFrom(src => src.Birthday.ToUniversalTime()))
+		    .ForMember(dest => dest.DeathDay, opts => opts.MapFrom(src => src.DeathDay.ToUniversalTime()))
 		    .ForMember(dest => dest.Biography, opts => opts.MapFrom(src => src.Biography))
 		    .ForMember(dest => dest.Active, opts => opts.MapFrom(src => src.Active == 1 ? true : false))
             .ForMember(dest => dest.Attachments, opts => opts.ConvertUsing(new MediaResourceToAttachmentValueConverter(), src => src.MediaResources));
@@ -57,8 +59,9 @@ public class MediaResourceToAttachmentValueConverter : IValueConverter<List<Medi
                     AttachmentType = attachmentType,
 		        Data = m.Data,
 		        Order = m.Position,
-		        CreatedAt = m.CreateTime,
-		        IsActive = m.Active == 1 ? true : false
+		        CreatedAt = m.CreateTime.ToUniversalTime(),
+		        IsActive = m.Active == 1 ? true : false,
+		        Id = default(int)
                 };
         }).ToList();
 	}

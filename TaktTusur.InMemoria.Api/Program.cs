@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaktTusur.InMemoria.DataAccess.Context;
+using Microsoft.Extensions.Configuration;
+using TaktTusur.InMemoria.Api.ServiceTasks;
 
 namespace TaktTusur.InMemoria.Api;
 
@@ -10,6 +12,7 @@ public class Program
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
+		builder.Services.AddTransient<InitialSeedData>();
 
         var connectionString = builder.Configuration.GetConnectionString("InMemoriaDb");
         builder.Services.AddDbContext<InMemoriaDbContext>(options =>
@@ -20,7 +23,12 @@ public class Program
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerGen();
 
+		// Register SeedDataOptions from configuration
+		builder.Services.Configure<SeedDataOptions>(builder.Configuration.GetSection("SeedData"));
+
 		var app = builder.Build();
+
+		app.Services.GetRequiredService<InitialSeedData>().RestoreDatabase();
 
 		// Configure the HTTP request pipeline.
 		if (app.Environment.IsDevelopment())

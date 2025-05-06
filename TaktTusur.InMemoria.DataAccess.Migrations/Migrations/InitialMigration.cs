@@ -17,6 +17,7 @@ public class InitialMigration : Migration
 		    .WithColumn("Birthday").AsDateTime()
 		    .WithColumn("DeathDay").AsDateTime()
 		    .WithColumn("Biography").AsString()
+		    .WithColumn("AttachmentsStorageId").AsInt32()
 		    .WithColumn("Active").AsBoolean();
 
 		Create.Table("Attachments")
@@ -27,7 +28,9 @@ public class InitialMigration : Migration
 		    .WithColumn("IsActive").AsBoolean()
 		    .WithColumn("Data").AsString()
 		    .WithColumn("Order").AsInt32()
-		    .WithColumn("CreatedAt").AsDateTime();
+		    .WithColumn("CreatedAt").AsDateTime()
+		    .WithColumn("Category").AsInt32()
+		    .WithColumn("AttachmentType").AsInt32();
 	}
 
 	public override void Down()

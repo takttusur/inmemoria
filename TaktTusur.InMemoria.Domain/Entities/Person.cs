@@ -20,5 +20,7 @@ public class Person : BaseEntity
 
 	public bool Active { get; set; }
 
+	public int AttachmentsStorageId { get; set; }
+
 	public virtual List<Attachment> Attachments { get; set; }
 }
