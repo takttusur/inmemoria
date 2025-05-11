@@ -1,0 +1,83 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TaktTusur.InMemoria.Api.Models;
+using TaktTusur.InMemoria.DataAccess.Context;
+using TaktTusur.InMemoria.Domain.Entities;
+
+[Route("api/v1/[controller]")]
+[ApiController]
+public class PersonController : Controller
+{
+	private readonly InMemoriaDbContext _context;
+
+	public PersonController(InMemoriaDbContext context)
+	{
+		_context = context;
+	}
+
+	[HttpGet]
+	[ProducesResponseType<PagedResultModel<Person>>(200)]
+	public IActionResult Get(string query = "", int skip = 0, int take = 10)
+	{
+		IQueryable<Person> persons = _context.Persons.AsNoTracking().Where(x => x.Active);
+		if (!string.IsNullOrWhiteSpace(query))
+		{
+			persons = persons.Where(x =>
+				x.FirstName.Contains(query)
+				|| x.LastName.Contains(query)
+				|| x.Patronymic.Contains(query)
+				|| x.MaidenName.Contains(query)
+				|| x.Nickname.Contains(query));
+		}
+
+		var count = persons.Count();
+		persons = persons.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Patronymic)
+			.Skip(skip).Take(take);
+
+		var result = new PagedResultModel<Person>()
+		{
+			Items = persons,
+			TotalCount = count,
+			Skip = skip,
+			Take = take
+		};
+
+		return Ok(result);
+	}
+
+	[HttpGet("letters")]
+	[ProducesResponseType<LettersViewModel[]>(200)]
+	public IActionResult Get()
+	{
+		var persons = _context.Persons.AsNoTracking().Where(x => x.Active).ToList();
+		var groups = persons
+			.GroupBy(p => p.FirstName[0], p => p)
+			.OrderBy(g => g.Key)
+			.Select(g => new LettersViewModel()
+			{
+				Letter = g.Key.ToString(),
+				Persons = g.ToArray()
+			});
+
+		var result = groups.ToArray();
+
+		return Ok(result);
+	}
+
+	[HttpGet("{id}")]
+	[ProducesResponseType<Person>(200)]
+	public IActionResult Get(int id)
+	{
+		var person = _context.Persons
+			.Include(x => x.Attachments)
+			.AsNoTracking()
+			.FirstOrDefault(x => x.Id == id);
+
+		if (person == null)
+		{
+			return NotFound();
+		}
+
+		return Ok(person);
+	}
+}

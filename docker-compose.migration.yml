@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  takttusur.inmemoria.mysql:
+    image: mysql:9
+    tmpfs:
+      - /var/lib/mysql
+    environment:
+      MYSQL_USER: user
+      MYSQL_DATABASE: inmemoria
+      MYSQL_PASSWORD: migrationPassword
+      MYSQL_ROOT_PASSWORD: migrationPassword
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
+
+  takttusur.inmemoria.migrationapp:
+    image: takttusur.inmemoria.migrationapp
+    depends_on:
+      takttusur.inmemoria.mysql:
+        condition: service_healthy
+    restart: no
+    build:
+      context: .
+      dockerfile: TaktTusur.InMemoria.MigrationApp/Dockerfile
+    volumes:
+      - ./Data/settings.json:/app/settings.json:rw
+      - ./Data/persons:/app/persons:rw

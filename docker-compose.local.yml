@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  takttusur.inmemoria.api:
+    image: takttusur.inmemoria.api
+    build:
+      context: .
+      dockerfile: TaktTusur.InMemoria.Api/Dockerfile
+    volumes:
+      - ./Data/persons:/app/persons:r
+    environment:
+      ConnectionStrings__InMemoriaDb: "Host=db;Database=mydb;Username=postgres;Password=mypassword"
+      ASPNETCORE_URLS: "http://+:80"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    ports:
+      - "5555:80"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  migrator:
+    build:
+      context: .
+      dockerfile: TaktTusur.InMemoria.DataAccess.Migrations/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__InMemoriaDb: "Host=db;Database=mydb;Username=postgres;Password=mypassword"

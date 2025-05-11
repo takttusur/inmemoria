@@ -1,0 +1,28 @@
+{
+  "FirstName": "Amy",
+  "LastName": "Anderson",
+  "MaidenName": "Adams",
+  "Patronymic": "Anne",
+  "Nickname": "Annie",
+  "Birthday": "1980-01-10T00:00:00Z",
+  "DeathDay": "2060-05-15T00:00:00Z",
+  "Biography": "This is a placeholder biography for Amy Anderson.",
+  "Active": true,
+  "AttachmentsStorageId": 7,
+  "Attachments": [
+    {
+      "Title": "Amy Anderson-1",
+      "Subtitle": "Fake Subtitle",
+      "IsActive": true,
+      "Data": "20220115093030.jpg",
+      "Category": 1,
+      "AttachmentType": 1,
+      "Order": 2,
+      "CreatedAt": "2022-01-15T04:15:30Z",
+      "PersonId": 1,
+      "Person": null,
+      "Id": 0
+    }
+  ],
+  "Id": 0
+}
