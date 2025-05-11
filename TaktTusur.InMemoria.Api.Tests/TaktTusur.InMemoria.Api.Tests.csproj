@@ -11,6 +11,9 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="FluentAssertions" Version="8.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.15" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.15" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="NUnit" Version="3.14.0"/>
         <PackageReference Include="NUnit.Analyzers" Version="3.9.0"/>
@@ -19,6 +22,19 @@
 
     <ItemGroup>
         <Using Include="NUnit.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TaktTusur.InMemoria.Api\TaktTusur.InMemoria.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="persons\3.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="persons\5.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

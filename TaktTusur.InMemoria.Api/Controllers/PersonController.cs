@@ -4,7 +4,7 @@ using TaktTusur.InMemoria.Api.Models;
 using TaktTusur.InMemoria.DataAccess.Context;
 using TaktTusur.InMemoria.Domain.Entities;
 
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class PersonController : Controller
 {

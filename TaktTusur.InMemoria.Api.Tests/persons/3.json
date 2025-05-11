@@ -1,0 +1,28 @@
+{
+  "FirstName": "John",
+  "LastName": "Doe",
+  "MaidenName": "",
+  "Patronymic": "Richard",
+  "Nickname": "",
+  "Birthday": "1965-07-14T00:00:00Z",
+  "DeathDay": "2025-06-20T00:00:00Z",
+  "Biography": "This is a placeholder biography for John Doe.",
+  "Active": true,
+  "AttachmentsStorageId": 5,
+  "Attachments": [
+    {
+      "Title": "John Doe-2",
+      "Subtitle": "Placeholder Subtitle",
+      "IsActive": true,
+      "Data": "20190530094041.jpg",
+      "Category": 0,
+      "AttachmentType": 0,
+      "Order": 3,
+      "CreatedAt": "2019-11-15T03:17:56Z",
+      "PersonId": 0,
+      "Person": null,
+      "Id": 0
+    }
+  ],
+  "Id": 0
+}
