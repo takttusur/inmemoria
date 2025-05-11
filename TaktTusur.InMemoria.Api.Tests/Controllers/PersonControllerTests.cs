@@ -20,10 +20,19 @@ public class PersonControllerTests : TestsBase
 	}
 
 	[Test]
-	public async Task GetWithoutParameters()
+	public async Task GetNotFound()
 	{
 		var httpClient = WebAppFactory!.CreateClient();
 		var response = await httpClient.GetAsync($"{BASE_URL}/-1");
 		response.StatusCode.Should().Be(HttpStatusCode.NotFound, "person id is invalid(less than 0)");
+	}
+
+	[Test]
+	public async Task GetLetters()
+	{
+		var httpClient = WebAppFactory!.CreateClient();
+		var response = await httpClient.GetStringAsync($"{BASE_URL}/letters");
+
+		response.Length.Should().NotBe(0, "Response should not be empty");
 	}
 }

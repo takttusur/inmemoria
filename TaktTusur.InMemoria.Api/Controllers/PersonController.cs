@@ -45,6 +45,25 @@ public class PersonController : Controller
 		return Ok(result);
 	}
 
+	[HttpGet("letters")]
+	[ProducesResponseType<LettersViewModel[]>(200)]
+	public IActionResult Get()
+	{
+		var persons = _context.Persons.AsNoTracking().Where(x => x.Active).ToList();
+		var groups = persons
+			.GroupBy(p => p.FirstName[0], p => p)
+			.OrderBy(g => g.Key)
+			.Select(g => new LettersViewModel()
+			{
+				Letter = g.Key.ToString(),
+				Persons = g.ToArray()
+			});
+
+		var result = groups.ToArray();
+
+		return Ok(result);
+	}
+
 	[HttpGet("{id}")]
 	[ProducesResponseType<Person>(200)]
 	public IActionResult Get(int id)
