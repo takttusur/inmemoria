@@ -4,6 +4,8 @@ using TaktTusur.InMemoria.Api.Models;
 using TaktTusur.InMemoria.DataAccess.Context;
 using TaktTusur.InMemoria.Domain.Entities;
 
+namespace TaktTusur.InMemoria.Api.Controllers;
+
 [Route("api/v1/[controller]")]
 [ApiController]
 public class PersonController : Controller
@@ -17,7 +19,7 @@ public class PersonController : Controller
 
 	[HttpGet]
 	[ProducesResponseType<PagedResultModel<Person>>(200)]
-	public IActionResult Get(string query = "", int skip = 0, int take = 10)
+	public IActionResult Get(string query = "", int skip = 0, int take = 10, bool random = false)
 	{
 		IQueryable<Person> persons = _context.Persons.AsNoTracking().Where(x => x.Active);
 		if (!string.IsNullOrWhiteSpace(query))
@@ -31,8 +33,15 @@ public class PersonController : Controller
 		}
 
 		var count = persons.Count();
-		persons = persons.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Patronymic)
-			.Skip(skip).Take(take);
+		if (random)
+		{
+			persons = persons.OrderBy(x => Guid.NewGuid()).Skip(skip).Take(take);
+		}
+		else
+		{
+			persons = persons.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Patronymic)
+				.Skip(skip).Take(take);
+		}
 
 		var result = new PagedResultModel<Person>()
 		{
@@ -78,6 +87,28 @@ public class PersonController : Controller
 			return NotFound();
 		}
 
-		return Ok(person);
+		// To avoid cycle referencing
+		foreach (var attachment in person.Attachments)
+		{
+			attachment.Person = null;
+		}
+
+		var model = new PersonFullViewModel()
+		{
+			Id = person.Id,
+			FirstName = person.FirstName,
+			LastName = person.LastName,
+			Biography = person.Biography,
+			BirthDay = person.Birthday.ToString("O"),
+			DeathDay = person.DeathDay.ToString("O"),
+			Layout = null,
+			MaidenName = person.MaidenName,
+			Nickname = person.Nickname,
+			Patronymic = person.Patronymic,
+			Memories = person.Attachments?.Where(a => a.Category == AttachmentCategory.Memories).ToArray() ?? [],
+			Photos = person.Attachments?.Where(a => a.Category == AttachmentCategory.Gallery).ToArray() ?? []
+		};
+
+		return Ok(model);
 	}
 }

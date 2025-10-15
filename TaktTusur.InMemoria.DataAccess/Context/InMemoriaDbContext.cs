@@ -9,6 +9,8 @@ public class InMemoriaDbContext : DbContext
 
 	public DbSet<Attachment> Attachments { get; set; }
 
+	public DbSet<Epigraph> Epigraphs { get; set; }
+
 	public InMemoriaDbContext(DbContextOptions options) : base(options)
 	{
 	}
@@ -44,6 +46,13 @@ public class InMemoriaDbContext : DbContext
 			      .WithMany(p => p.Attachments)
 			      .HasForeignKey(e => e.PersonId)
 			      .HasConstraintName("FK_Attachments_Person");
+		});
+
+		modelBuilder.Entity<Epigraph>(entity =>
+		{
+			entity.ToTable("Epigraphs");
+			entity.HasKey(e => e.Id);
+			entity.Property(e => e.Text).IsRequired();
 		});
 	}
 }

@@ -31,11 +31,16 @@ public class InitialMigration : Migration
 		    .WithColumn("CreatedAt").AsDateTime()
 		    .WithColumn("Category").AsInt32()
 		    .WithColumn("AttachmentType").AsInt32();
+
+		Create.Table("Epigraphs")
+			.WithColumn("Id").AsInt32().PrimaryKey().Identity()
+			.WithColumn("Text").AsString();
 	}
 
 	public override void Down()
 	{
 		Delete.Table("Attachments");
 		Delete.Table("Person");
+		Delete.Table("Epigraphs");
 	}
 }
