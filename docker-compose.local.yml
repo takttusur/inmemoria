@@ -44,3 +44,18 @@ services:
         condition: service_healthy
     environment:
       ConnectionStrings__InMemoriaDb: "Host=db;Database=mydb;Username=postgres;Password=mypassword"
+
+  frontend:
+    image: ghcr.io/takttusur/takt-public:develop
+    ports:
+      - "5554:80"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5551:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - takttusur.inmemoria.api
+      - frontend
