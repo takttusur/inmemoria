@@ -62,10 +62,21 @@ public class BulkInsertTask : IProvisioningTask
 			_logger.LogDebug("Reading {path} file", file);
 
 			var json = File.ReadAllText(file);
-			var model = new Epigraph(); //TODO:
-			var key = model.Text[..50];
+			Epigraph? jsonModel = System.Text.Json.JsonSerializer.Deserialize<Epigraph>(json);
 
-			var dbModel = _dbContext.Epigraphs.FirstOrDefault(e => e.Text == model.Text);
+			if (jsonModel == null)
+			{
+				_logger.LogWarning("File {path} deserialized to null Epigraph model. Skipping.", file);
+				continue;
+			}
+
+			var model = new Epigraph
+			{
+				Text = jsonModel.Text
+			};
+			var key = model.Text[..25];
+
+			var dbModel = _dbContext.Epigraphs.FirstOrDefault(e => e.Text.StartsWith(key));
 			if (dbModel != null)
 			{
 				_logger.LogDebug("The Epigraph with text '{text}' already exists", key);
